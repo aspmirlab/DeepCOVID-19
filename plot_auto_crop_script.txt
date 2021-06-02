@@ -1,0 +1,93 @@
+%This script automatically crops plot in a Figure relative to the minimum-maximum X-Y values.
+
+%Enter number of samples to crop
+Number_of_Samples = 10;
+
+%Output Directory Path
+mkdir(['C:\Users\Adekunle\Desktop\Output_Samples\']);
+
+for i = 1:Number_of_Samples
+cd(['C:\Users\Adekunle\Desktop\Input_Samples\']);
+filename = sprintf('%s%d.%s','sample',i,'jpg');
+
+%This section first crops image to ignore the coordinate axis
+a = imread(filename);
+%figure; imshow(a);
+b = imcrop(a, [95 32 1105 639]);
+%figure; imshow(b);
+
+
+tamper = 0;
+%Determine Upper Left X-Coordinate
+for x = 1:size(b,2)
+for y = 1:size(b,1)
+if (b(y,x,1) < 20) & (b(y,x,2) < 20) & (b(y,x,3) > 200)
+tamper = 1;
+break;
+end
+end
+if tamper ~= 0
+break;
+end
+end
+x1 = x;
+
+
+tamper = 0;
+%Determine Upper Left Y-Coordinate
+for y = 1:size(b,1)
+for x = 1:size(b,2)
+if (b(y,x,1) < 20) & (b(y,x,2) < 20) & (b(y,x,3) > 200)
+tamper = 1;
+break;
+end
+end
+if tamper ~= 0
+break;
+end
+end
+y1 = y;
+
+
+tamper = 0;
+%Determine Lower Right X-Coordinate
+for x = size(b,2):-1:1
+for y = size(b,1):-1:1
+if (b(y,x,1) < 20) & (b(y,x,2) < 20) & (b(y,x,3) > 200)
+tamper = 1;
+break;
+end
+end
+if tamper ~= 0
+break;
+end
+end
+x2 = x;
+
+
+tamper = 0;
+%Determine Lower Right Y-Coordinate
+for y = size(b,1):-1:1
+for x = size(b,2):-1:1
+if (b(y,x,1) < 20) & (b(y,x,2) < 20) & (b(y,x,3) > 200)
+tamper = 1;
+break;
+end
+end
+if tamper ~= 0
+break;
+end
+end
+y2 = y;
+
+c = imcrop(b, [x1 y1 x2-x1 y2-y1]);
+%figure; imshow(c);
+d = imresize(c, [550 900]);
+
+cd(['C:\Users\Adekunle\Desktop\Output_Samples\']);
+filename = sprintf('%s_%d.%s','sample',i,'jpg');
+imwrite(d, filename);
+
+end
+
+
